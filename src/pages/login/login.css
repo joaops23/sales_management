@@ -1,0 +1,37 @@
+.formLabel
+{
+    color: #998d5a;
+    font-weight: 700;
+    font-size: 18px;
+    font-style: oblique;
+
+    display: block;
+}
+
+.inputDefault
+{
+    line-height: 150%;
+    border: 2px solid;
+    border-color: #998d5a;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: 5px;
+}
+
+.inputDefault:focus
+{
+    line-height: 250%;
+    animation: animateExpanded 0.123s ease-in;
+}
+
+@keyframes animateExpanded
+{
+    0%{
+        line-height: 100%;
+    }
+
+    100%{
+        line-height: 250%;
+    }
+}
