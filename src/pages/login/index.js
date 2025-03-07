@@ -1,4 +1,4 @@
-import { Form } from "react-router-dom";
+import Api from "../../services/api";
 import "./login.css";
 import { useState } from "react";
 
@@ -7,9 +7,14 @@ export function Login(){
     const [pwd, setPwd] = useState('');
 
     const handleSubmit = () => {
-        alert("Email:" + email + "\nSenha:" + pwd);
+        const api = new Api();
+        api.loginPost()
+        .then(result => {
+            console.log(result)
+        }).catch(e => {
+            console.log(e)
+        });
     };
-
 
     return (
         <div className='containerForm'>
