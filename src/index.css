@@ -138,3 +138,44 @@ h1
   }
 
 }
+
+.gridUsuario
+{
+  margin-top: 50px !important;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
+  border-radius:15px !important;
+}
+
+.addButton
+{
+  position:fixed;
+  bottom: 5rem;
+  right: 5rem;
+}
+
+.text-center {
+  text-align: center;
+  margin-top: 1px;
+}
+
+
+.align-center {
+  left: 50%;
+  right: 50%;
+}
+
+.input-control {
+  width: 100%;
+}
+
+.form-control {
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+
+.submitClass {
+  left: 26%;
+  right: 50%;
+  margin-top: 20px !important;
+}
