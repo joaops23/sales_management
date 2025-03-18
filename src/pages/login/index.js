@@ -30,6 +30,9 @@ export function Login(){
         } catch(err) {
             console.error(err)
             setAlert({type: 'error', message: "Preencha novamente os dados de login!"})
+            setTimeout(() => {
+                setAlert(null);
+            }, 3000);
         }
     };
 

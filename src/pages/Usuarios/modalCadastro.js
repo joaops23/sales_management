@@ -1,6 +1,6 @@
 import { Alert, Avatar, Box, Button, Fab, Grid2, Modal, TextField } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { green } from "@mui/material/colors";
 import { useForm } from "react-hook-form"
@@ -10,9 +10,7 @@ import { UsuIdContextEdit } from ".";
 export default function ModalCadastro(props)
 {
     const [open, setOpen] = useState(false);
-    const usuIdContext = useContext(UsuIdContextEdit);
-
-    //console.log(usuIdContext)
+    const [usuIdContext] = useContext(UsuIdContextEdit);
     
     const style = {
         position: 'absolute',
@@ -30,11 +28,21 @@ export default function ModalCadastro(props)
       };
 
     const handleOpen = () => {
-    setOpen(true);
+        setOpen(true);
+
     };
     const handleClose = () => {
-    setOpen(false);
+        setOpen(false);
+        if(usuIdContext > 0) {
+            //console.log(UsuIdContextEdit)
+        }
     };
+
+    useEffect(() => {
+        if(usuIdContext !== 'null' && usuIdContext > 0) {
+            handleOpen();
+        }
+    })
 
     return(
         <div className='addButton'>
@@ -98,7 +106,7 @@ const FormCadastro = (props) => {
     return(
         <div style={{width: '100%', marginTop: '2rem'}}>
             <form onSubmit={handleSubmit(onSubmit)} action='user/cad'>
-            <input id='usu_id' value={props.usuId} style={{display: 'none'}} />
+            <input id='usu_id' value={props.usuId} style={{display: 'block'}} />
             <Grid2 container spacing={4} >
                 
                 <Grid2 offset={spacingForm} size={inputSize}>

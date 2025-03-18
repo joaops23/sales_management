@@ -1,5 +1,5 @@
 import { Button, Container, Grid2, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@mui/material";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import Api from "../../services/api";
 import TabMenu from "../../components/Tabenu";
 import ModalCadastro from "./modalCadastro";
@@ -17,7 +17,7 @@ export default function Usuarios()
     const api = new Api();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const { isExpired } = useJwt((new Auth()).getToken());
+    const { decodeToken ,isExpired } = useJwt((new Auth()).getToken());
     const navigate = useNavigate();
     const [usuIdEdit, setUsuIdEdit] = useState(null);
 
@@ -47,15 +47,14 @@ export default function Usuarios()
     }
 
     useEffect(() => {
-        // valida se o token está vencido 
-        if(isExpired === true) {
+        // valida se o token está vencido         
+        if(isExpired === true || (decodeToken === null || decodeToken === '') ) {
             navigate('/login/');
+            return;
         } else {
             if(rows === null || rows.length === 0)
                 results();
-
         }
-        
     })
 
     const handleRows = (data) => {
@@ -83,10 +82,9 @@ export default function Usuarios()
         setPage(0);
     };
 
-    const handleEdit = (event, usuId) => {
+    const handleEdit = (e, val) => {
 
-        console.log(event.target)
-        setUsuIdEdit(usuId)
+        setUsuIdEdit(e.target.id.split('-')[1])
     }
     
     
@@ -95,8 +93,8 @@ export default function Usuarios()
         return(
             <div>
                 
-                <Button title='Editar' onClick={handleEdit} id={props.id}>
-                    <EditIcon />
+                <Button title='Editar' onClick={handleEdit} id={"userid-" + props.usuId}>
+                    <EditIcon id={"userid-" + props.usuId}/>
                 </Button>
                 <Button title='Desabilitar'>
                     <CancelIcon /> 
@@ -163,7 +161,7 @@ export default function Usuarios()
                             onRowsPerPageChange={handleChangeRowsPerPage}
                         />
                     </Grid2>
-                    <ModalCadastro />
+                    <ModalCadastro usuId={usuIdEdit} />
                 </Paper>
             </Container>
         </UsuIdContextEdit.Provider>
