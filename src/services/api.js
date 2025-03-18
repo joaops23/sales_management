@@ -57,14 +57,42 @@ class Api
     async setInsertUser(...args)
     {
         try{
+            let route = '';
             const headers = {
                 'Authorization': `Baerer ${(new Auth()).getToken()}`
             }
 
             const data = args.pop();
 
+            route = `/user/update/${data.usu_id}`
+
+            if(data.usu_id === '') {
+                route = "/user/store";
+                delete data.usu_id
+            }
             const response = await this.api
-                .post("/user/store", {data: data}, {
+                .post(route, {data: data}, {
+                    headers: headers
+                });
+
+                
+                return response
+            } catch(err) {
+            throw new Error(err.response.data.message)
+        }
+    }
+
+    async getUsuById(...args)
+    {
+        try{
+            const headers = {
+                'Authorization': `Baerer ${(new Auth()).getToken()}`
+            }
+
+            const usuId = args.pop();
+
+            const response = await this.api
+                .get(`/user/${usuId}`, {
                     headers: headers
                 });
 

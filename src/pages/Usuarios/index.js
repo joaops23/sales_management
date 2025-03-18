@@ -46,17 +46,6 @@ export default function Usuarios()
         handleRows(data);
     }
 
-    useEffect(() => {
-        // valida se o token está vencido         
-        if(isExpired === true || (decodeToken === null || decodeToken === '') ) {
-            navigate('/login/');
-            return;
-        } else {
-            if(rows === null || rows.length === 0)
-                results();
-        }
-    })
-
     const handleRows = (data) => {
         let returnData = [];
         let actions = 'edit'
@@ -82,19 +71,35 @@ export default function Usuarios()
         setPage(0);
     };
 
-    const handleEdit = (e, val) => {
+    const handleEditClose = () => {
+        setUsuIdEdit(null)
+    }
 
+    const handleEdit = (e) => {
         setUsuIdEdit(e.target.id.split('-')[1])
     }
+
+    useEffect(() => {
+        return () => {
+            // valida se o token está vencido         
+            if(isExpired === true || (decodeToken === null || decodeToken === '') ) {
+                navigate('/login');
+                return;
+            } else {
+                if(rows === null || rows.length === 0)
+                    results();
+            }
+        }
+    }, [])
+
     
     
     function Icons(props)
     {
         return(
             <div>
-                
                 <Button title='Editar' onClick={handleEdit} id={"userid-" + props.usuId}>
-                    <EditIcon id={"userid-" + props.usuId}/>
+                    <EditIcon />
                 </Button>
                 <Button title='Desabilitar'>
                     <CancelIcon /> 
@@ -161,7 +166,7 @@ export default function Usuarios()
                             onRowsPerPageChange={handleChangeRowsPerPage}
                         />
                     </Grid2>
-                    <ModalCadastro usuId={usuIdEdit} />
+                    <ModalCadastro usuId={usuIdEdit}  handleEditClose={handleEditClose}/>
                 </Paper>
             </Container>
         </UsuIdContextEdit.Provider>

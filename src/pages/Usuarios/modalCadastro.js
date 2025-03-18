@@ -10,7 +10,7 @@ import { UsuIdContextEdit } from ".";
 export default function ModalCadastro(props)
 {
     const [open, setOpen] = useState(false);
-    const [usuIdContext] = useContext(UsuIdContextEdit);
+    const usuIdContext = useContext(UsuIdContextEdit);
     
     const style = {
         position: 'absolute',
@@ -29,19 +29,21 @@ export default function ModalCadastro(props)
 
     const handleOpen = () => {
         setOpen(true);
-
+        
     };
     const handleClose = () => {
         setOpen(false);
-        if(usuIdContext > 0) {
-            //console.log(UsuIdContextEdit)
+        
+        if(usuIdContext != null ) {
+            props.handleEditClose();
         }
     };
 
     useEffect(() => {
-        if(usuIdContext !== 'null' && usuIdContext > 0) {
+        if(usuIdContext !== 'null' && usuIdContext > 0  && open == false) {
             handleOpen();
         }
+
     })
 
     return(
@@ -57,14 +59,14 @@ export default function ModalCadastro(props)
                 className='modalCadastroUsuario modalCadastro'
             >
                 <Box sx={{ ...style, width: "50%" }}>
-                <h3 id="" className="text-center">Cadastro de Usuários</h3>
-                <Avatar className="align-center" sx={{ bgcolor: green[500]}}>
-                    <PersonAddIcon />
-                </Avatar>
+                    <h3 id="" className="text-center">{props.usuId == null ? "Cadastro" : "Edição" } de Usuários</h3>
+                    <Avatar className="align-center" sx={{ bgcolor: green[500]}}>
+                        <PersonAddIcon />
+                    </Avatar>
 
-                <Grid2 container spacing={2}>
-                    <FormCadastro usuId={props?.usuId} />
-                </Grid2>
+                    <Grid2 container spacing={2}>
+                        <FormCadastro usuId={props?.usuId} />
+                    </Grid2>
                 </Box>
             </Modal>
         </div>
@@ -78,17 +80,19 @@ const FormCadastro = (props) => {
     const api = new Api();
     const [alertCad, setAlertCad] = useState(null);
 
-    const { register, formState: { errors }, handleSubmit } = useForm();
+    const { register, formState: { errors }, handleSubmit, setValue } = useForm();
     const onSubmit = (data) => {
         setUSer(data)
     }
 
     const setUSer = async(data) => {
         try{
-            const ret = await api.setInsertUser(data);
+            let ret = await api.setInsertUser(data);
 
             if(ret.status === 201) {
-                setAlertCad({type: 'success', message: "Usuário cadastrado com sucesso!"})
+
+                let tipo = data.usu_id === '' ? 'cadastrado' : 'Atualizado';
+                setAlertCad({type: 'success', message: `Usuário ${tipo} com sucesso!`})
                 setTimeout(() => {
                     window.location.reload()
                 }, 2000);
@@ -102,11 +106,43 @@ const FormCadastro = (props) => {
         }
     }
 
+    const searchUser = async() => {
+        try{
+            const res = await api.getUsuById(props.usuId);
+
+            if(typeof res !== 'undefined' ) {
+                setDataUser(res.data)
+            }
+        }catch(err) {
+            setAlertCad({type: 'error', message: "Aconteceu um erro inesperado!" })
+            setTimeout(() => {
+                setAlertCad(false);
+            }, 3000);
+        }
+    }
+
+    const setDataUser = (data) => {
+        setValue('usu_nome', data.usu_nome)
+        setValue('usu_email', data.usu_email)
+        setValue('usu_cpf', data.usu_cpf)
+        
+
+    }
+
+    useEffect(() => {
+        return () => {
+            if(props.usuId !== null) {
+                searchUser();
+            }
+        }
+    }, [])
+
 
     return(
         <div style={{width: '100%', marginTop: '2rem'}}>
-            <form onSubmit={handleSubmit(onSubmit)} action='user/cad'>
-            <input id='usu_id' value={props.usuId} style={{display: 'block'}} />
+            <form onSubmit={handleSubmit(onSubmit)} >
+            <input id='usu_id' value={props.usuId} style={{display: 'none'}} 
+            {...register("usu_id")}/>
             <Grid2 container spacing={4} >
                 
                 <Grid2 offset={spacingForm} size={inputSize}>
@@ -117,7 +153,7 @@ const FormCadastro = (props) => {
                     )}
                 </Grid2>
                 <Grid2 offset={spacingForm} size={inputSize}>
-                <TextField id="usu_nome" className='input-control' label="Nome" variant="standard"
+                <TextField id="usu_nome" className='input-control' label="Nome" variant="standard" 
                     {...register("usu_nome", { required: true, maxLength: 100 })}/>
                 </Grid2>
                 <Grid2 offset={spacingForm} size={inputSize}>
