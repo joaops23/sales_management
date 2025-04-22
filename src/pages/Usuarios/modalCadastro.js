@@ -122,7 +122,7 @@ const FormCadastro = (props) => {
     }
 
     const setDataUser = (data) => {
-        setValue('usu_nome', data.usu_nome)
+        setValue('usu_nome', data.usu_nome)        
         setValue('usu_email', data.usu_email)
         setValue('usu_cpf', data.usu_cpf)
         
